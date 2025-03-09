@@ -1,0 +1,38 @@
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_DB=app_db
+      # Windows用のX11設定 (VcXsrvのIPアドレスとディスプレイ番号)
+      - DISPLAY=host.docker.internal:0
+      # PyAutoGUIの設定
+      - PYAUTOGUI_FAILSAFE=False
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # X11サーバーへのアクセス権を付与
+    privileged: true
+    tty: true
+    stdin_open: true
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=app_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+
+volumes:
+  mysql_data:
