@@ -2,7 +2,14 @@ services:
   app:
     build: .
     volumes:
-      - .:/app
+      - ./main.py:/app/main.py
+      - ./test_gui.py:/app/test_gui.py
+      - ./test_screenshot.py:/app/test_screenshot.py
+      - ./requirements.txt:/app/requirements.txt
+      - ./screenshots:/app/screenshots
+      - ./init-db:/app/init-db
+      - ./start.sh:/app/start.sh
+    command: bash
     depends_on:
       - db
     environment:
